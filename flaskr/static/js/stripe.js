@@ -7,8 +7,6 @@ const style = {
     base: {
         color: "#32325d",
         width: '50%',
-        // lineHeight: '1.35',
-        // color: "#495057",
         fontFamily: 'apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif',
         fontSmoothing: "antialiased",
         fontSize: "1.11rem",
@@ -34,7 +32,7 @@ form.addEventListener('submit', async (event) => {
     // We don't want to let default form submission happen here,
     // which would refresh the page.
     event.preventDefault();
-
+    changeLoadingState(true);
     const result = await stripe.createPaymentMethod({
         type: 'card',
         card: cardElement,
@@ -50,6 +48,7 @@ form.addEventListener('submit', async (event) => {
 const stripePaymentMethodHandler = async (result) => {
     if (result.error) {
         // Show error in payment form
+        showError(result.error)
     } else {
         // Otherwise send paymentMethod.id to your server (see Step 4)
         const res = await fetch(`${ window.origin }/pay`, {
@@ -60,7 +59,6 @@ const stripePaymentMethodHandler = async (result) => {
             }),
         })
         const paymentResponse = await res.json();
-
         // Handle server response (see Step 4)
         handleServerResponse(paymentResponse);
     }
@@ -69,7 +67,7 @@ const stripePaymentMethodHandler = async (result) => {
 const handleServerResponse = async (response) => {
     if (response.error) {
         // Show error from server on payment form
-        console.log(response.error)
+        showError(response.error)
     } else if (response.requires_action) {
         // Use Stripe.js to handle the required card action
         const { error: errorAction, paymentIntent } =
@@ -77,6 +75,8 @@ const handleServerResponse = async (response) => {
 
         if (errorAction) {
             // Show error from Stripe.js in payment form
+            console.log(errorAction)
+            showError(errorAction.message)
         } else {
             // The card action has been handled
             // The PaymentIntent can be confirmed again on the server
@@ -89,6 +89,46 @@ const handleServerResponse = async (response) => {
         }
     } else {
         // Show success message
-        console.log(response)
+        orderComplete(response)
     }
 }
+
+
+/* ------- Post-payment helpers ------- */
+
+/* Shows a success / error message when the payment is complete */
+const orderComplete = function(response) {
+    const responseJson = JSON.stringify(response, null, 2);
+    document.querySelector(".sr-payment-form").classList.add("hidden");
+    document.querySelector("pre").textContent = responseJson;
+
+    document.querySelector(".sr-result").classList.remove("hidden");
+    setTimeout(function() {
+    document.querySelector(".sr-result").classList.add("expand");
+    }, 200);
+
+    changeLoadingState(false);
+  };
+  
+  const showError = function(errorMsgText) {
+    changeLoadingState(false);
+    const errorMsg = document.querySelector(".sr-field-error");
+    errorMsg.textContent = errorMsgText;
+    setTimeout(function() {
+      errorMsg.textContent = "";
+    }, 4000);
+  };
+  
+
+// Show a spinner on payment submission
+const changeLoadingState = function(isLoading) {
+    if (isLoading) {
+      document.querySelector("button").disabled = true;
+      document.querySelector("#spinner").classList.remove("hidden");
+      document.querySelector("#button-text").classList.add("hidden");
+    } else {
+      document.querySelector("button").disabled = false;
+      document.querySelector("#spinner").classList.add("hidden");
+      document.querySelector("#button-text").classList.remove("hidden");
+    }
+  };

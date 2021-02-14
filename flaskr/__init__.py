@@ -47,7 +47,11 @@ def generate_response(intent):
   elif intent.status == 'succeeded':
     # The payment didn’t need any additional actions and completed!
     # Handle post-payment fulfillment
-    return json.dumps({'success': True}), 200
+    return json.dumps({
+      'success': True,
+      'amount': 2000,
+      'currency': 'gbp',
+    }), 200
   else:
     # Invalid status
     return json.dumps({'error': 'Invalid PaymentIntent status'}), 500
