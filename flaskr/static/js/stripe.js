@@ -6,10 +6,8 @@ const elements = stripe.elements();
 const style = {
     base: {
         color: "#32325d",
-        width: '50%',
         fontFamily: 'apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif',
         fontSmoothing: "antialiased",
-        fontSize: "1.11rem",
         "::placeholder": {
             color: "#aab7c4"
         }
@@ -21,11 +19,13 @@ const style = {
 };
 
 const cardElement = elements.create('card', { 
-    'placeholder': '',
     'style': style,
     'hidePostalCode': true,
 });
 cardElement.mount('#card-element');
+cardElement.on('change', function(event) {
+    changeBtnState(event.complete)
+});
 
 const form = document.getElementById('payment-form');
 
@@ -114,7 +114,7 @@ const orderComplete = function(response) {
   const showError = function(errorMsgText) {
     changeLoadingState(false);
     const errorMsg = document.querySelector(".sr-field-error");
-    errorMsg.textContent = errorMsgText;
+    errorMsg.textContent = errorMsgText.message;
     setTimeout(function() {
       errorMsg.textContent = "";
     }, 4000);
@@ -132,4 +132,13 @@ const changeLoadingState = function(isLoading) {
       document.querySelector("#spinner").classList.add("hidden");
       document.querySelector("#button-text").classList.remove("hidden");
     }
-  };
+};
+
+const changeBtnState = function(isComplete) {
+    const btn = document.getElementById('submit')
+    if(isComplete){
+        btn.disabled = false;
+    } else {
+        btn.disabled = true;
+    }
+}
