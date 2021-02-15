@@ -1,7 +1,12 @@
 {% extends 'layout.html' %}
+{% block stylesheet %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
+{% endblock stylesheet %}
+
 {% block title %}
-Checkout
+  Checkout
 {% endblock title %}
+
 {% block main %}
 <div class="sr-root">
     <div class="sr-main">
@@ -39,8 +44,8 @@ Checkout
       </div>
     </div>
   </div>
-
 {% endblock main %}
+
 {% block script %}
-<script src="{{ url_for('static', filename='js/stripe.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/stripe.js') }}"></script>
 {% endblock script %}
