@@ -22,7 +22,8 @@ const style = {
 
 const cardElement = elements.create('card', { 
     'placeholder': '',
-    'style': style 
+    'style': style,
+    'hidePostalCode': true,
 });
 cardElement.mount('#card-element');
 
