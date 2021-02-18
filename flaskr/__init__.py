@@ -174,5 +174,11 @@ def create_payment():
                 'clientSecret': err.payment_intent.client_secret
             })
 
+
+@app.route('/pricing')
+def pricing():
+    return render_template('pricing.html')
+
+
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8000, debug=True)
