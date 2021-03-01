@@ -8,9 +8,9 @@ import os
 set_environ()
 
 # INTEGRATION NOTE #6: a seperate thread that update and charge user for subscription periodically 
-# sec_thread = threading.Thread(target=update)
-# sec_thread.daemon = True
-# sec_thread.start()
+sec_thread = threading.Thread(target=update)
+sec_thread.daemon = True
+sec_thread.start()
 
 # database_name = "test"
 # postgres_user = "postgres"
