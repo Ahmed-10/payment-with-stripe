@@ -1,0 +1,38 @@
+{% extends 'subscription/plans-base.html' %}
+
+{% block title %}
+{{ plan.plan_name }} plan
+{% endblock title %}
+
+{% block main %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>{{ plan.plan_name }}</h1>
+            <hr>
+            <h4>price: {{ plan.price }} $</h4>
+            <ul>
+                {% for feat in plan.features %}
+                <li>{{ feat }}</li>
+                {% endfor %}
+            </ul>
+            <hr>
+            <button class="btn btn-primary">delete</button>
+        </div>
+    </div>
+</div>
+<script>
+    const plan = {{ plan | tojson }}
+    console.log(typeof(plan.id))
+    document.getElementsByTagName('button')[0].addEventListener('click', (event) => {
+        event.preventDefault();
+        fetch(`/plans/${ plan.id }`, { method: 'DELETE'})
+            .then(res => res.json())
+            .then(res => {
+                if(res.message === 'ok'){
+                    window.location.href = `${ window.origin }/plans`
+                }
+            })
+    })
+</script>
+{% endblock main %}

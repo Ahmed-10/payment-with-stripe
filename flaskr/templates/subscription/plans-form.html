@@ -1,0 +1,59 @@
+{% extends 'subscription/plans-base.html' %}
+{% block title %} Add Plan{% endblock %}
+{% block main %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>plans</h1>
+            <hr>
+            {% for plan in plans %}
+            <a href={{'/plans/' + plan.id }}>{{ plan.plan_name}}</a>
+            <br>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>ADD PLAN</h1>
+            <hr>
+
+            <form>
+                <div class="row">
+                    <div class="col-6">
+                        <label for="">Plan Name</label>
+                        <input type="text" class="form-control" id="plan-name" placeholder="Enter Plan Name">
+                    </div>
+                    <div class="col-6">
+                        <label for="">Price</label>
+                        <input type="number" class="form-control" id="price" placeholder="Enter Plan Price">
+                    </div>
+                    <div class="col-12 mt-2">
+                        <label for="">Features</label>
+                    </div>
+                    <div class="col-12">
+                        {% for feature in features %}
+                        <div class="form-check">
+                            <input class="form-check-input checkbox" type="checkbox" value={{ loop.index }}>
+                            <label class="form-check-label">
+                              {{ feature }}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="col-10">
+                        <button class="btn btn-primary mt-3" id="submit">submit</button>
+                    </div>
+                </div>
+            </form>
+            <br>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+    <script>const featuresList = {{ features | tojson }}</script>
+    <script src="{{ url_for('static', filename='subscription/js/add-plans.js')}}"></script>
+{% endblock %}

@@ -1,0 +1,21 @@
+CREATE TABLE customers (
+    id SERIAL NOT NULL PRIMARY KEY,
+    user_id INTEGER NOT NULL UNIQUE,
+    stripe_id VARCHAR(50) NOT NULL UNIQUE,
+    mail VARCHAR(50) NOT NULL UNIQUE,
+    company VARCHAR(50) NOT NULL,
+    package INTEGER NOT NULL,
+    off_session BOOLEAN,
+    renew_date DATE
+);
+
+
+CREATE TABLE plans (
+    id SERIAL NOT NULL PRIMARY KEY,
+    plan_name VARCHAR(50) NOT NULL UNIQUE,
+    price INTEGER NOT NULL UNIQUE,
+    details TEXT NOT NULL
+);
+
+
+INSERT INTO plans (plan_name, price, details) VALUES ('free', 0, 'Aida dere-Nec feugiat nisl');

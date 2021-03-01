@@ -1,3 +1,4 @@
+// INTEGRATION NOTE #5: cupdate stripe configeration
 const stripe = Stripe('pk_test_51IJKWhBqrfVtgI4Xhxbt3ddvxQ0AhGQugIizWMS0Gfreh4mQqqAHuI576nZZgoTnihihU0GVox6l8eJwVCxMPeIV00Hv3641Vk');
 
 const elements = stripe.elements();
@@ -25,11 +26,6 @@ document.querySelector("#submit").addEventListener("click", function(evt) {
     pay(stripe, card);
 });
 
-// var orderData = {
-//   items: [{ id: "photo-subscription" }],
-//   currency: "usd"
-// };
-
 const handleAction = function(clientSecret) {
   // Show the authentication modal if the PaymentIntent has a status of "requires_action"
   stripe.handleCardAction(clientSecret).then(function(data) {
@@ -43,7 +39,9 @@ const handleAction = function(clientSecret) {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          paymentIntentId: data.paymentIntent.id
+          paymentIntentId: data.paymentIntent.id,
+          customer: customer,
+          plan: plan
         })
       })
         .then(function(result) {
@@ -65,27 +63,18 @@ const handleAction = function(clientSecret) {
  */
 const pay = function(stripe, card) {
   let orderData = {}  
-  const cardholderName = document.querySelector("#name").value;
-  const data = {
-    billing_details: {}
-  };
-
-  if (cardholderName) {
-    data["billing_details"]["name"] = cardholderName;
-  }
-
   changeLoadingState(true);
-
   // Collect card details
   stripe
-    .createPaymentMethod("card", card, data)
+    .createPaymentMethod("card", card)
     .then(function(result) {
       if (result.error) {
         showError(result.error.message);
       } else {
         orderData.paymentMethodId = result.paymentMethod.id;
         orderData.isSavingCard = document.querySelector("#save-card").checked;
-
+        orderData.customer = customer;
+        orderData.plan = plan;
         return fetch("/subscripe", {
           method: "POST",
           headers: {
@@ -125,7 +114,11 @@ const orderComplete = function(clientSecret) {
     });
     document.querySelector(".status").textContent =
       paymentIntent.status === "succeeded" ? "succeeded" : "failed";
-    document.querySelector("pre").textContent = paymentIntentJson;
+    const transaction = JSON.parse(paymentIntentJson)
+    document.querySelector("pre").textContent = JSON.stringify({
+      transaction_id: transaction.id,
+      amount: `$${transaction.amount / 100} ${transaction.currency.toUpperCase()}`
+    }, null, 2);
   });
 };
 
@@ -135,7 +128,7 @@ const showError = function(errorMsgText) {
   errorMsg.textContent = errorMsgText;
   setTimeout(function() {
     errorMsg.textContent = "";
-  }, 4000);
+  }, 10000);
 };
 
 // Show a spinner on payment submission

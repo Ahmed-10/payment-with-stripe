@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='subscription/css/global.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='subscription/css/normalize.css') }}">
+    <title>Checkout</title>
+</head>
+<body>
+    <div class="sr-root">
+        <div class="sr-main">
+          <div class="box">
+            <h3 class="plan">{{ plan.plan_name }} Plan</h3>
+            <div class="price"><sup>$</sup>{{ plan.price }}<span> / mo</span></div>
+            <ul>
+              {% for feature in plan.features %}
+              <li class="feature">{{ feature }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <div class="sr-main">
+          <div class="sr-payment-form payment-view">
+            <div class="sr-form-row">
+              <label for="card-element">
+                Payment details
+              </label>
+              <div class="sr-combo-inputs">
+                <div class="sr-combo-inputs-row">
+                  <div class="sr-input sr-card-element" id="card-element"></div>
+                </div>
+              </div>
+              <div class="sr-field-error" id="card-errors" role="alert"></div>
+              <div class="sr-form-row">
+                <label class="sr-checkbox-label"><input type="checkbox" id="save-card"><span class="sr-checkbox-check"></span>
+                  Save card for future payments</label>
+              </div>
+            </div>
+            <button id="submit">
+              <div class="spinner hidden" id="spinner"></div><span id="button-text">Pay</span>
+            </button>
+            <!-- <div class="sr-legal-text">
+              Your card will be charged $14.00.
+            </div> -->
+          </div>
+          <div class="sr-payment-summary hidden completed-view">
+            <h1>Your payment <span class="status"></span></h1>
+          </div>
+          <div class="sr-section hidden completed-view">
+            <div class="sr-callout">
+              <pre>
+      
+                </pre>
+            </div>
+            <!-- # INTEGRATION NOTE: edit return to the main app -->
+            <a href={{"http://127.0.0.1:5000/profile/" + customer.user_id }}>
+              <button>Go Back</button>
+            </a>
+          </div>
+        </div>
+      </div>
+      <script src="https://js.stripe.com/v3/"></script>
+      <script>
+        let customer = {{ customer|tojson }}
+        let plan = {{ plan|tojson }}
+      </script>
+      <script src="{{ url_for('static', filename='subscription/js/stripe.js') }}"></script>
+</body>
+</html>

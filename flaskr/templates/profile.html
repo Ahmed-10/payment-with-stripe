@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}profile{% endblock %}
+
+{% block main %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1>{{ user.company }}</h1>
+            <hr>
+            <ul>
+                <i>{{ user.email }}</i>
+                <br>
+                <!-- INTEGRATION NOTE: view customer plan (optional) -->
+                <!-- -------------------- start -------------------- -->
+                <i>you are on the {{ user.plan }} plan</i>
+            </ul>
+            <a href={{"http://127.0.0.1:5000/customers/" + user.id + "/plans" }}>
+                <button type="button" class="btn btn-primary">Change Plan</button>
+            </a>
+        </div>
+        <div class="col mt-4">
+            <form action={{ "/force-subscription/" + user.id}} method="POST">
+                <div class="row">
+                    <div class="col">
+                        <label for="new-plan">plan force change</label>
+                    </div>
+                    <div class="col">
+                        <select class="form-control" id="new-plan" name="new-plan">
+                            {% for plan in plans%}
+                            <option value={{ plan.id }}>{{ plan.plan_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col">
+                        <button type="submit" class="force-change btn btn-primary">force change</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- -------------------- end -------------------- -->
+    </div>
+</div>
+{% endblock %}
