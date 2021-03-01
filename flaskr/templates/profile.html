@@ -15,7 +15,7 @@
                 <!-- -------------------- start -------------------- -->
                 <i>you are on the {{ user.plan }} plan</i>
             </ul>
-            <a href={{"http://127.0.0.1:5000/customers/" + user.id + "/plans" }}>
+            <a href={{"/customers/" + user.id + "/plans" }}>
                 <button type="button" class="btn btn-primary">Change Plan</button>
             </a>
         </div>
